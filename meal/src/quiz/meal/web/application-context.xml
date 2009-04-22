@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.directwebremoting.org/schema/spring-dwr
+    http://www.directwebremoting.org/schema/spring-dwr-2.0.xsd">
+
+	<dwr:controller id="dwrController" debug="true" />
+
+	<bean class="quiz.meal.SimpleMenu" name="menu" />
+
+	<bean class="quiz.meal.plain.PlainOrderMaker" name="plainOrderMaker" />
+
+	<bean class="quiz.meal.web.OrderMakerFacade" name="plainOrderMakerFacade">
+		<property name="orderMaker" ref="plainOrderMaker" />
+		<property name="menu" ref="menu" />
+		<dwr:remote javascript="OrderMaker">
+			<dwr:include method="makeOrder" />
+			<dwr:include method="getFoodMenu" />
+			<dwr:include method="getMealMenu" />
+		</dwr:remote>
+	</bean>
+</beans>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bsf-2.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bsh-2.0b4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-validator-1.1.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/dwr.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jakarta-oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/quiz1.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>
