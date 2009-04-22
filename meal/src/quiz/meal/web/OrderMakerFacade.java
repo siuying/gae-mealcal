@@ -59,7 +59,7 @@ public class OrderMakerFacade {
     
     private Map<String, Object> dumpMeal(Meal meal) {
         Map<String, Object> foodDump = new HashMap<String, Object>();
-        foodDump.put("price", String.format("%.2f", meal.getPrice()));
+        foodDump.put("price", meal.getPrice());
         foodDump.put("foods", getItemNames(meal.getFood().toArray(new Food[0])));
         return foodDump;
     }
