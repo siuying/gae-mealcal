@@ -8,6 +8,11 @@
 	
 	<dwr:configuration>
 		<dwr:convert type="bean" class="quiz.meal.model.*" />
+
+		<!-- Debug Use -->
+		<dwr:convert type="bean" class="java.lang.StackTraceElement"/>
+		<dwr:convert type="exception" class="java.lang.Throwable"/>		
+
 	</dwr:configuration>
 	
 	<dwr:controller id="dwrController" debug="true" />
@@ -18,11 +23,11 @@
 
 	<bean class="quiz.meal.plain.PlainOrderMaker" name="plainOrderMaker" />
 	
-	<bean class="quiz.meal.csp.CSPOrderMaker" name="cspOrderMaker">
+	<bean class="quiz.meal.csp.CSPOrderMaker" name="cspOrderMaker" depends-on="menu">
 		<property name="menu" ref="menu" />
 	</bean>
 	
-	<bean class="quiz.meal.web.MenuFacade" name="menuFacade">
+	<bean class="quiz.meal.web.MenuFacade" name="menuFacade" depends-on="menu">
 		<property name="menu" ref="menu" />
 		<dwr:remote javascript="Menu">
 			<dwr:include method="getFood" />
@@ -30,7 +35,7 @@
 		</dwr:remote>
 	</bean>
 	
-	<bean class="quiz.meal.web.OrderMakerFacade" name="naiveOrderMakerFacade">
+	<bean class="quiz.meal.web.OrderMakerFacade" name="naiveOrderMakerFacade" depends-on="menu,naiveOrderMaker">
 		<property name="orderMaker" ref="naiveOrderMaker" />
 		<property name="menu" ref="menu" />
 		<dwr:remote javascript="NaiveOrderMaker">
@@ -38,7 +43,7 @@
 		</dwr:remote>
 	</bean>
 	
-	<bean class="quiz.meal.web.OrderMakerFacade" name="plainOrderMakerFacade">
+	<bean class="quiz.meal.web.OrderMakerFacade" name="plainOrderMakerFacade" depends-on="menu,plainOrderMaker">
 		<property name="orderMaker" ref="plainOrderMaker" />
 		<property name="menu" ref="menu" />
 		<dwr:remote javascript="PlainOrderMaker">
@@ -46,7 +51,7 @@
 		</dwr:remote>
 	</bean>
 	
-	<bean class="quiz.meal.web.OrderMakerFacade" name="cspOrderMakerFacade">
+	<bean class="quiz.meal.web.OrderMakerFacade" name="cspOrderMakerFacade" depends-on="menu,cspOrderMaker">
 		<property name="orderMaker" ref="cspOrderMaker" />
 		<property name="menu" ref="menu" />
 		<dwr:remote javascript="CSPOrderMaker">

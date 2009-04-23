@@ -24,11 +24,6 @@
 						name: "Plain Maker",
 						maker: PlainOrderMaker,
 						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/plain/PlainOrderMaker.java"
-					},
-					"csp": {
-						name: "CSP Order Maker",
-						maker: CSPOrderMaker,
-						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/csp/CSPOrderMaker.java"
 					}
 				},
 				
@@ -116,27 +111,34 @@
 				    var url = om.url;
 				    console.log('title:', title);
 				    
-				    om.maker.makeOrder(selected, function(items) {
-			            // reporting
-			            var outputHtml = '';
-			            var total = 0;
+				    om.maker.makeOrder(selected, {
+				    	  callback:function(items) {
+					            // reporting
+					            var outputHtml = '';
+					            var total = 0;
 
-			            for (var i in items) {
-			                var item = menu.foods[items[i]] || menu.meals[items[i]];
-			                if (item) {
-			                    outputHtml += "<li>" + items[i] + " ($" + item.price + ") </li>";
-			                    total += item.price;
-			                }
-			            }
+					            for (var i in items) {
+					                var item = menu.foods[items[i]] || menu.meals[items[i]];
+					                if (item) {
+					                    outputHtml += "<li>" + items[i] + " ($" + item.price + ") </li>";
+					                    total += item.price;
+					                }
+					            }
 
-			            if (outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
+					            if (outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
 
-			            outputHtml  = '<div><h3><a href="'+ url + '" target="_BLANK">' + title + '</a> 建議：</h3>' + outputHtml;
-			            outputHtml += '<p class="total">總額: $' + Math.round(total * 1000) / 1000 + '</p>'
-			            outputHtml += '</div>';
-			            
-			            jQuery("#output").append(outputHtml);			            
-			        });
+					            outputHtml  = '<div><h3><a href="'+ url + '" target="_BLANK">' + title + '</a> 建議：</h3>' + outputHtml;
+					            outputHtml += '<p class="total">總額: $' + Math.round(total * 1000) / 1000 + '</p>'
+					            outputHtml += '</div>';
+					            
+					            jQuery("#output").append(outputHtml);			            
+					        },
+				    	errorHandler: function(errorString, exception) {
+					        if(console) {
+						        console.log("exception: ", errorString, exception);
+					        }
+				        }
+			    	});
 			    },
 
 			    clearSelection: function(menu) {
