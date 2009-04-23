@@ -2,11 +2,9 @@
 	<head>
 		<title>買餐計價</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
-  		
-  		<script type='text/javascript' src='../tabs/tabs.js'> </script>
-  		<script type='text/javascript' src='../dwr/engine.js'> </script>
-  		<script type='text/javascript' src='../dwr/util.js'> </script>
-  		<script type='text/javascript' src='../dwr/interface/OrderMaker.js'> </script>
+  		<script type='text/javascript' src='./dwr/engine.js'> </script>
+  		<script type='text/javascript' src='./dwr/util.js'> </script>
+  		<script type='text/javascript' src='./dwr/interface/OrderMaker.js'> </script>
  
 		<script type="text/javascript" src="meal_calculator.js"></script>
 		<style type="text/css">
@@ -42,82 +40,68 @@
 			#suggestion {display:none;}
 		</style>
 		<script type="text/javascript">
-			mealCalculator.loaded = function () {
-				//Init meal cal
-				mealCalculator.menu = macMenu;
-	
-				//Init food
-				var foods = [];
-				for(var f in mealCalculator.menu.foods){ foods.push(f); }
-				var html = $.map(foods, function(n,i){
-					return '<a class="food" href="#">'+n+'</a>($' + mealCalculator.menu.foods[f].price + ')';
-				}).join(",");
-				
-				//Populate food items
-				$("#availableFoods")
-					.html(html)
-					.click(function(e){
-						var t = $(e.target);
-						if(t.is("a")){
-							var copy = t.clone();
-							$("<span/>")
-								.append(copy)
-								.append("<a class='close' href='#'>x</a>")
-								.appendTo("#selected")
-								.click(function(){
-									$(this).remove();
-									return false;
-								});
-						}
-						return false;
-					});
-			
-				
-				$("#find").click(function(){
-				
-					//Calculate
-					var selected = [];
-					$("#selected a.food").each(function(){ 
-						selected.push($(this).text()); 
-					});
-
-					// delegate to remote order maker
-					OrderMaker.makeOrder(selected, function(data) {
-				    	var items = data; 
-					    	
-				    	//reporting
-						var outputHtml = "";
-						var total = 0;
-						var menu = mealCalculator.menu;
-						for(var i in items){
-							var item = menu.foods[items[i]] || menu.meals[items[i]];
-							if(item){
-								outputHtml += "<li>" + items[i] + " ($" + item.price + ") </li>";
-								total += item.price;
-							}
-						}
-						
-						if(outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
-						outputHtml += '<p class="total">總額: $' + Math.round(total*1000)/1000 + '</p>'; //prevent floating point problem
-						$("#output").html(outputHtml);
-						$("#suggestion").show();
-					});
-					
-					
-				});
-				
-				$("#clear").click(function(){
-					$("#selected").html("");
-					$("#output").html("");
-					$("#suggestion").hide();
-					return false;
-				});
-			}
-			
 			$(document).ready(function(){
-				macMenu.init(function(){
-					mealCalculator.loaded();
-				});				
+				macMenu.init(function(menu){	    
+	                //Init food
+	                var foods = [];
+	                for(var f in menu.foods){ foods.push(f); }
+	                var html = $.map(foods, function(n,i){
+	                    return '<a class="food" href="#">'+n+'</a>($' + menu.foods[f].price + ')';
+	                }).join(",");
+	                
+	                //Populate food items
+	                $("#availableFoods").html(html)
+	                   .click(function(e){
+	                    var t = $(e.target);
+	                    if(t.is("a")){
+	                        var copy = t.clone();
+	                        $("<span/>")
+	                            .append(copy)
+	                            .append("<a class='close' href='#'>x</a>")
+	                            .appendTo("#selected")
+	                            .click(function(){
+	                                $(this).remove();
+	                                return false;
+	                            });
+	                    }
+	                    return false;
+	                });
+				});
+
+	            $("#find").click(function(){                
+	                //Calculate
+	                var selected = [];
+	                $("#selected a.food").each(function(){ 
+	                    selected.push($(this).text()); 
+	                });
+	
+	                // delegate to remote order maker
+	                OrderMaker.makeOrder(selected, function(items) {                            
+	                    //reporting
+	                    var outputHtml = "";
+	                    var total = 0;
+	                    var menu = macMenu;
+	                    for(var i in items){
+	                        var item = menu.foods[items[i]] || menu.meals[items[i]];
+	                        if(item){
+	                            outputHtml += "<li>" + items[i] + " ($" + item.price + ") </li>";
+	                            total += item.price;
+	                        }
+	                    }
+	                    
+	                    if(outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
+	                    outputHtml += '<p class="total">總額: $' + Math.round(total*1000)/1000 + '</p>'; //prevent floating point problem
+	                    $("#output").html(outputHtml);
+	                    $("#suggestion").show();
+	                });                 
+	            });
+	            
+	            $("#clear").click(function(){
+	                $("#selected").html("");
+	                $("#output").html("");
+	                $("#suggestion").hide();
+	                return false;
+	            });				
 			});
 			
 			dwr.util.useLoadingMessage();
