@@ -4,12 +4,15 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
   		<script type='text/javascript' src='./dwr/engine.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/Menu.js'> </script>
-  		<script type='text/javascript' src='./dwr/interface/CSPOrderMaker.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/PlainOrderMaker.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/NaiveOrderMaker.js'> </script>
-		<script type="text/javascript" src="meal_calculator.js"></script>
+  		<script type='text/javascript' src='/dwr/interface/CSPOrderMaker.js'></script>
+  		<script type='text/javascript' src='/dwr/engine.js'></script>
+		<script type='text/javascript' src='/dwr/util.js'></script>
+
 		<link rel="stylesheet" href="meal.css" />
 		<script type="text/javascript">
+			jQuery.noConflict();
 			var mealController = {
 				orderMakers: {
 					"naive": {
@@ -17,15 +20,15 @@
 						maker: NaiveOrderMaker,
 						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/simple/NaiveOrderMaker.java"
 					},
-					"csp": {
-						name: "CSP Order Maker",
-						maker: CSPOrderMaker,
-						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/csp/CSPOrderMaker.java"
-					},
 					"plain": {
 						name: "Plain Maker",
 						maker: PlainOrderMaker,
 						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/plain/PlainOrderMaker.java"
+					},
+					"csp": {
+						name: "CSP Order Maker",
+						maker: CSPOrderMaker,
+						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/csp/CSPOrderMaker.java"
 					}
 				},
 				
@@ -37,11 +40,11 @@
 			    init: function() {
 			        var controller = mealController;
 
-			        $("#find").click(function() {
+			        jQuery("#find").click(function() {
 			            controller.findOrder();
 			        });
 
-			        $("#clear").click(function() {
+			        jQuery("#clear").click(function() {
 			            controller.clearSelection();
 			        });
 
@@ -62,23 +65,23 @@
 			        for (var f in menu.foods) {
 			            foods.push(f);
 			        }
-			        var html = $.map(foods, function(n, i) {
+			        var html = jQuery.map(foods, function(n, i) {
 			            return '<a class="food" href="#">' + n + '</a>($' + menu.foods[f].price + ')';
 			        }).join(",");
 
 			        // Populate food items
-			        $("#availableFoods")
+			        jQuery("#availableFoods")
 						.html(html)
 			        	.click(function(e) {
-				            var t = $(e.target);
+				            var t = jQuery(e.target);
 				            if (t.is("a")) {
 				                var copy = t.clone();
-				                $("<span/>")
+				                jQuery("<span/>")
 				                .append(copy)
 				                .append("<a class='close' href='#'>x</a>")
 				                .appendTo("#selected")
 				                .click(function() {
-				                    $(this).remove();
+				                	jQuery(this).remove();
 				                    return false;
 				                });
 				            }
@@ -92,16 +95,17 @@
 					
 			        // User Selection
 			        var selected = [];
-			        $("#selected a.food").each(function() {
-			            selected.push($(this).text());
+			        jQuery("#selected a.food").each(function() {
+			            selected.push(jQuery(this).text());
 			        });
 
 			        if (selected.length > 0) {
-				        $("#output").html("");
-				        $.each(this.getOrderMakers(), function(id, orderMaker){
-				        	controller.findOrderUsingOrderMaker(orderMaker, menu, selected);
+			        	jQuery("#output").html("");
+				        var timeout = 0;
+				        jQuery.each(this.getOrderMakers(), function(id, orderMaker){
+			        		controller.findOrderUsingOrderMaker(orderMaker, menu, selected);
 					    });
-				        $("#suggestion").show();
+				        jQuery("#suggestion").show();
 			        }
 
 			    },
@@ -131,14 +135,14 @@
 			            outputHtml += '<p class="total">總額: $' + Math.round(total * 1000) / 1000 + '</p>'
 			            outputHtml += '</div>';
 			            
-			            $("#output").append(outputHtml);			            
+			            jQuery("#output").append(outputHtml);			            
 			        });
 			    },
 
 			    clearSelection: function(menu) {
-			        $("#selected").html("");
-			        $("#output").html("");
-			        $("#suggestion").hide();
+			    	jQuery("#selected").html("");
+			    	jQuery("#output").html("");
+			    	jQuery("#suggestion").hide();
 			        return false;
 			    },
 
@@ -152,7 +156,7 @@
 			};
 
 			// run when DOM ready
-			$(document).ready(function() {
+			jQuery(document).ready(function() {
 			    mealController.init();
 			});
 		</script>

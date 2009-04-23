@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dwr.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jakarta-oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/quiz1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.12.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
