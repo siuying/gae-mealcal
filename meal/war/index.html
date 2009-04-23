@@ -4,43 +4,35 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
   		<script type='text/javascript' src='./dwr/engine.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/OrderMaker.js'> </script>
- 
 		<script type="text/javascript" src="meal_calculator.js"></script>
-		<style type="text/css">
-			body{ font-size: 12px;}
-			h1 { font-size: 2em; color: #333; padding-bottom: 2px; border-bottom: 2px solid #888;}
-			h2 { font-size: 1.3em; margin-bottom: 3px;}
-			.section { margin: 0.3em; border-bottom: 1px solid #aaa;padding-bottom: 5px;}
-			#availableFoods {
-				/*border: 1px solid #ccc;*/
-				padding: 5px 2px;
-			}
-			#availableFoods a{ text-decoration:none; padding: 0 0.3em;}
-			#availableFoods a:hover{ background-color: #aaa; color:white;}
-			#selected { min-height: 1.3em; margin: 1em 0;}
-			#selected span { 
-				padding: 0 0.3em; 
-				margin:0.3em; 
-				line-height: 1.5em; 
-				border: 1px solid #ccc; 
-				-moz-border-radius: 8px;
-				-webkit-border-radius: 8px;
-				background-color:#eee; 
-				color:black;
-				display: inline-block;
-			}
-			#selected span a {text-decoration:none;}
-			#selected span a.close { 
-				padding-left: 5px; 
-				font-size:0.9em; 
-				font-family:Arial;
-			}
-			.total { font-size: 1.3em; font-weight:bold; color: green; margin-left: 1em;}
-			#suggestion {display:none;}
-		</style>
+		<link rel="stylesheet" href="meal.css" />
 		<script type="text/javascript">
-			$(document).ready(function(){
-				macMenu.init(function(menu){	    
+			var mealController = {
+				menu: {foods: {}, meals: {}},
+
+				init: function() {
+					var controller = mealController;
+					
+		            $("#find").click(function(){                
+		            	controller.findOrder();
+		            });
+		            
+		            $("#clear").click(function(){
+		            	controller.clearSelection();
+		            });
+
+					OrderMaker.getFoodMenu( function(data) {
+						controller.menu.foods = data;
+						OrderMaker.getMealMenu( function(data) {
+							controller.menu.meals = data;
+							controller.loadMenu();
+						});
+					});
+				},
+
+				loadMenu: function() {
+					var menu = this.getMenu();
+					
 	                //Init food
 	                var foods = [];
 	                for(var f in menu.foods){ foods.push(f); }
@@ -65,21 +57,23 @@
 	                    }
 	                    return false;
 	                });
-				});
+				},
 
-	            $("#find").click(function(){                
-	                //Calculate
+				findOrder: function() {
+					var menu = this.getMenu();
+					
+	                // User Selection
 	                var selected = [];
 	                $("#selected a.food").each(function(){ 
 	                    selected.push($(this).text()); 
 	                });
 	
-	                // delegate to remote order maker
-	                OrderMaker.makeOrder(selected, function(items) {                            
+	                // Delegate to remote order maker
+	                OrderMaker.makeOrder(selected, function(items) {
+
 	                    //reporting
 	                    var outputHtml = "";
 	                    var total = 0;
-	                    var menu = macMenu;
 	                    for(var i in items){
 	                        var item = menu.foods[items[i]] || menu.meals[items[i]];
 	                        if(item){
@@ -92,21 +86,30 @@
 	                    outputHtml += '<p class="total">總額: $' + Math.round(total*1000)/1000 + '</p>'; //prevent floating point problem
 	                    $("#output").html(outputHtml);
 	                    $("#suggestion").show();
-	                });                 
-	            });
-	            
-	            $("#clear").click(function(){
+	                });  
+				},
+
+				clearSelection: function(menu) {
 	                $("#selected").html("");
 	                $("#output").html("");
 	                $("#suggestion").hide();
 	                return false;
-	            });				
+				},
+				
+				getMenu: function() {
+					return this.menu;
+				},
+			};
+
+			// run when DOM ready
+			$(document).ready(function(){
+				mealController.init();		
 			});
 		</script>
 	</head>
 	<body>
 	
-		<h1>買餐計價 2.0</h1>
+		<h1>買餐計價 @ GAE</h1>
 		
 		<div class="section">
 			<h2>點擊加入食物:</h2>
@@ -127,11 +130,8 @@
 		</div>
 
 		<div class="footnote">
-			<p>本頁是依據這篇 <a href="http://www.reality.hk/articles/2009/04/19/929/">post</a>，<a href="http://twitter.com/jackysee">Jackysee</a> 的 <a href="http://github.com/jackysee/mealcalculator/tree/master">JavaScript</a> 
-			版本，使用 Google App Engine，Spring ， DWR 再加上原本的 <a href="http://github.com/siuying/quiz1/tree/master">Java</a> 版本作成。</p>			
-			<p>原碼在 <a href="http://github.com/siuying/gae-mealcal/tree/master">github</a>，歡迎下載研究。</p>
-			<p><i>TODO:可選的 Order Maker 實作 (現在固定使用 PlainOrderMaker)</i></p> 			
-			<p>--<br/><a href="http://twitter.com/siuying">siuying</a></p>
+			<p>Based on javascript implementation by <a href="http://jackysee.github.com/mealcalculator/meal_calculator.html">jackysee</a>. Backed by Java <a href="http://github.com/siuying/quiz1/tree/master">implementations</a> with GAE + DWR + Spring. Details <a href="http://www.reality.hk/articles/2009/04/19/929/">here</a></p>
+			<p>Source code at <a href="http://github.com/siuying/gae-mealcal/tree/master">github</a> @ <a href="http://twitter.com/siuying">siuying</a></p>
 		</div>
 	</body>
 </html>
