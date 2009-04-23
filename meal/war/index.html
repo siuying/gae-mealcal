@@ -8,102 +8,107 @@
 		<link rel="stylesheet" href="meal.css" />
 		<script type="text/javascript">
 			var mealController = {
-				menu: {foods: {}, meals: {}},
+			    menu: {
+			        foods: {},
+			        meals: {}
+			    },
 
-				init: function() {
-					var controller = mealController;
-					
-		            $("#find").click(function(){                
-		            	controller.findOrder();
-		            });
-		            
-		            $("#clear").click(function(){
-		            	controller.clearSelection();
-		            });
+			    init: function() {
+			        var controller = mealController;
 
-					OrderMaker.getFoodMenu( function(data) {
-						controller.menu.foods = data;
-						OrderMaker.getMealMenu( function(data) {
-							controller.menu.meals = data;
-							controller.loadMenu();
-						});
-					});
-				},
+			        $("#find").click(function() {
+			            controller.findOrder();
+			        });
 
-				loadMenu: function() {
-					var menu = this.getMenu();
-					
-	                //Init food
-	                var foods = [];
-	                for(var f in menu.foods){ foods.push(f); }
-	                var html = $.map(foods, function(n,i){
-	                    return '<a class="food" href="#">'+n+'</a>($' + menu.foods[f].price + ')';
-	                }).join(",");
-	                
-	                //Populate food items
-	                $("#availableFoods").html(html)
-	                   .click(function(e){
-	                    var t = $(e.target);
-	                    if(t.is("a")){
-	                        var copy = t.clone();
-	                        $("<span/>")
-	                            .append(copy)
-	                            .append("<a class='close' href='#'>x</a>")
-	                            .appendTo("#selected")
-	                            .click(function(){
-	                                $(this).remove();
-	                                return false;
-	                            });
-	                    }
-	                    return false;
-	                });
-				},
+			        $("#clear").click(function() {
+			            controller.clearSelection();
+			        });
 
-				findOrder: function() {
-					var menu = this.getMenu();
-					
-	                // User Selection
-	                var selected = [];
-	                $("#selected a.food").each(function(){ 
-	                    selected.push($(this).text()); 
-	                });
-	
-	                // Delegate to remote order maker
-	                OrderMaker.makeOrder(selected, function(items) {
+			        OrderMaker.getFoodMenu(function(data) {
+			            controller.menu.foods = data;
+			            OrderMaker.getMealMenu(function(data) {
+			                controller.menu.meals = data;
+			                controller.loadMenu();
+			            });
+			        });
+			    },
 
-	                    //reporting
-	                    var outputHtml = "";
-	                    var total = 0;
-	                    for(var i in items){
-	                        var item = menu.foods[items[i]] || menu.meals[items[i]];
-	                        if(item){
-	                            outputHtml += "<li>" + items[i] + " ($" + item.price + ") </li>";
-	                            total += item.price;
-	                        }
-	                    }
-	                    
-	                    if(outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
-	                    outputHtml += '<p class="total">總額: $' + Math.round(total*1000)/1000 + '</p>'; //prevent floating point problem
-	                    $("#output").html(outputHtml);
-	                    $("#suggestion").show();
-	                });  
-				},
+			    loadMenu: function() {
+			        var menu = this.getMenu();
 
-				clearSelection: function(menu) {
-	                $("#selected").html("");
-	                $("#output").html("");
-	                $("#suggestion").hide();
-	                return false;
-				},
-				
-				getMenu: function() {
-					return this.menu;
-				},
+			        // Init food
+			        var foods = [];
+			        for (var f in menu.foods) {
+			            foods.push(f);
+			        }
+			        var html = $.map(foods, function(n, i) {
+			            return '<a class="food" href="#">' + n + '</a>($' + menu.foods[f].price + ')';
+			        }).join(",");
+
+			        // Populate food items
+			        $("#availableFoods")
+						.html(html)
+			        	.click(function(e) {
+				            var t = $(e.target);
+				            if (t.is("a")) {
+				                var copy = t.clone();
+				                $("<span/>")
+				                .append(copy)
+				                .append("<a class='close' href='#'>x</a>")
+				                .appendTo("#selected")
+				                .click(function() {
+				                    $(this).remove();
+				                    return false;
+				                });
+				            }
+				            return false;
+				        });
+			    },
+
+			    findOrder: function() {
+			        var menu = this.getMenu();
+
+			        // User Selection
+			        var selected = [];
+			        $("#selected a.food").each(function() {
+			            selected.push($(this).text());
+			        });
+
+			        // Delegate to remote order maker
+			        OrderMaker.makeOrder(selected, function(items) {
+			            // reporting
+			            var outputHtml = "";
+			            var total = 0;
+			            for (var i in items) {
+			                var item = menu.foods[items[i]] || menu.meals[items[i]];
+			                if (item) {
+			                    outputHtml += "<li>" + items[i] + " ($" + item.price + ") </li>";
+			                    total += item.price;
+			                }
+			            }
+
+			            if (outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
+			            outputHtml += '<p class="total">總額: $' + Math.round(total * 1000) / 1000 + '</p>';
+			            $("#output").html(outputHtml);
+			            $("#suggestion").show();
+			        });
+			    },
+
+			    clearSelection: function(menu) {
+			        $("#selected").html("");
+			        $("#output").html("");
+			        $("#suggestion").hide();
+			        return false;
+			    },
+
+			    getMenu: function() {
+			        return this.menu;
+			    },
 			};
 
 			// run when DOM ready
-			$(document).ready(function(){
-				mealController.init();		
+			$(document).ready(function() {
+			    mealController.init();
 			});
 		</script>
 	</head>
