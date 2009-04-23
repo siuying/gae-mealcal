@@ -3,11 +3,32 @@
 		<title>買餐計價</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
   		<script type='text/javascript' src='./dwr/engine.js'> </script>
-  		<script type='text/javascript' src='./dwr/interface/OrderMaker.js'> </script>
+  		<script type='text/javascript' src='./dwr/interface/Menu.js'> </script>
+  		<script type='text/javascript' src='./dwr/interface/CSPOrderMaker.js'> </script>
+  		<script type='text/javascript' src='./dwr/interface/PlainOrderMaker.js'> </script>
+  		<script type='text/javascript' src='./dwr/interface/NaiveOrderMaker.js'> </script>
 		<script type="text/javascript" src="meal_calculator.js"></script>
 		<link rel="stylesheet" href="meal.css" />
 		<script type="text/javascript">
 			var mealController = {
+				orderMakers: {
+					"naive": {
+						name: "Naive Maker",
+						maker: NaiveOrderMaker,
+						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/simple/NaiveOrderMaker.java"
+					},
+					"csp": {
+						name: "CSP Order Maker",
+						maker: CSPOrderMaker,
+						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/csp/CSPOrderMaker.java"
+					},
+					"plain": {
+						name: "Plain Maker",
+						maker: PlainOrderMaker,
+						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/plain/PlainOrderMaker.java"
+					}
+				},
+				
 			    menu: {
 			        foods: {},
 			        meals: {}
@@ -24,9 +45,9 @@
 			            controller.clearSelection();
 			        });
 
-			        OrderMaker.getFoodMenu(function(data) {
+			        Menu.getFood(function(data) {
 			            controller.menu.foods = data;
-			            OrderMaker.getMealMenu(function(data) {
+			            Menu.getMeal(function(data) {
 			                controller.menu.meals = data;
 			                controller.loadMenu();
 			            });
@@ -67,18 +88,35 @@
 
 			    findOrder: function() {
 			        var menu = this.getMenu();
-
+					var controller = this;
+					
 			        // User Selection
 			        var selected = [];
 			        $("#selected a.food").each(function() {
 			            selected.push($(this).text());
 			        });
 
-			        // Delegate to remote order maker
-			        OrderMaker.makeOrder(selected, function(items) {
+			        if (selected.length > 0) {
+				        $("#output").html("");
+				        $.each(this.getOrderMakers(), function(id, orderMaker){
+				        	controller.findOrderUsingOrderMaker(orderMaker, menu, selected);
+					    });
+				        $("#suggestion").show();
+			        }
+
+			    },
+
+			    findOrderUsingOrderMaker: function(om, menu, selected) {
+				    console.log('maker:', om);
+				    var title = om.name;
+				    var url = om.url;
+				    console.log('title:', title);
+				    
+				    om.maker.makeOrder(selected, function(items) {
 			            // reporting
-			            var outputHtml = "";
+			            var outputHtml = '';
 			            var total = 0;
+
 			            for (var i in items) {
 			                var item = menu.foods[items[i]] || menu.meals[items[i]];
 			                if (item) {
@@ -88,9 +126,12 @@
 			            }
 
 			            if (outputHtml) outputHtml = '<ul>' + outputHtml + '</ul>';
-			            outputHtml += '<p class="total">總額: $' + Math.round(total * 1000) / 1000 + '</p>';
-			            $("#output").html(outputHtml);
-			            $("#suggestion").show();
+
+			            outputHtml  = '<div><h3><a href="'+ url + '" target="_BLANK">' + title + '</a> 建議：</h3>' + outputHtml;
+			            outputHtml += '<p class="total">總額: $' + Math.round(total * 1000) / 1000 + '</p>'
+			            outputHtml += '</div>';
+			            
+			            $("#output").append(outputHtml);			            
 			        });
 			    },
 
@@ -103,6 +144,10 @@
 
 			    getMenu: function() {
 			        return this.menu;
+			    },
+
+			    getOrderMakers: function() {
+			        return this.orderMakers;
 			    },
 			};
 

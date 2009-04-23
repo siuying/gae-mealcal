@@ -9,16 +9,44 @@
 	<dwr:controller id="dwrController" debug="true" />
 
 	<bean class="quiz.meal.SimpleMenu" name="menu" />
+	
+	<bean class="quiz.meal.simple.NaiveOrderMaker" name="naiveOrderMaker" />
 
 	<bean class="quiz.meal.plain.PlainOrderMaker" name="plainOrderMaker" />
-
+	
+	<bean class="quiz.meal.csp.CSPOrderMaker" name="cspOrderMaker">
+		<property name="menu" ref="menu" />
+	</bean>
+	
+	<bean class="quiz.meal.web.MenuFacade" name="menuFacade">
+		<property name="menu" ref="menu" />
+		<dwr:remote javascript="Menu">
+			<dwr:include method="getFood" />
+			<dwr:include method="getMeal" />
+		</dwr:remote>
+	</bean>
+	
+	<bean class="quiz.meal.web.OrderMakerFacade" name="naiveOrderMakerFacade">
+		<property name="orderMaker" ref="naiveOrderMaker" />
+		<property name="menu" ref="menu" />
+		<dwr:remote javascript="NaiveOrderMaker">
+			<dwr:include method="makeOrder" />
+		</dwr:remote>
+	</bean>
+	
 	<bean class="quiz.meal.web.OrderMakerFacade" name="plainOrderMakerFacade">
 		<property name="orderMaker" ref="plainOrderMaker" />
 		<property name="menu" ref="menu" />
-		<dwr:remote javascript="OrderMaker">
+		<dwr:remote javascript="PlainOrderMaker">
 			<dwr:include method="makeOrder" />
-			<dwr:include method="getFoodMenu" />
-			<dwr:include method="getMealMenu" />
+		</dwr:remote>
+	</bean>
+	
+	<bean class="quiz.meal.web.OrderMakerFacade" name="cspOrderMakerFacade">
+		<property name="orderMaker" ref="cspOrderMaker" />
+		<property name="menu" ref="menu" />
+		<dwr:remote javascript="CSPOrderMaker">
+			<dwr:include method="makeOrder" />
 		</dwr:remote>
 	</bean>
 </beans>
