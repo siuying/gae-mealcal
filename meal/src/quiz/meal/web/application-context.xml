@@ -23,9 +23,7 @@
 
 	<bean class="quiz.meal.plain.PlainOrderMaker" name="plainOrderMaker" />
 	
-	<bean class="quiz.meal.csp.CSPOrderMaker" name="cspOrderMaker" depends-on="menu">
-		<property name="menu" ref="menu" />
-	</bean>
+	<bean class="quiz.meal.csp.CSOrderMaker" name="cspOrderMaker" />
 	
 	<bean class="quiz.meal.web.MenuFacade" name="menuFacade" depends-on="menu">
 		<property name="menu" ref="menu" />

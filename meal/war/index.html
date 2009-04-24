@@ -16,15 +16,20 @@
 			var mealController = {
 				orderMakers: {
 					"naive": {
-						name: "Naive Maker",
+						name: "Naive Order Maker",
 						maker: NaiveOrderMaker,
 						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/simple/NaiveOrderMaker.java"
 					},
 					"plain": {
-						name: "Plain Maker",
-						maker: PlainOrderMaker,
-						url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/plain/PlainOrderMaker.java"
-					}
+                        name: "Plain Order Maker",
+                        maker: PlainOrderMaker,
+                        url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/plain/PlainOrderMaker.java"
+                    },
+                    "csp": {
+                        name: "CSP Order Maker",
+                        maker: CSPOrderMaker,
+                        url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/csp/CSOrderMaker.java"
+                    }
 				},
 				
 			    menu: {
