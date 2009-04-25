@@ -7,6 +7,7 @@
   		<script type='text/javascript' src='./dwr/interface/PlainOrderMaker.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/NaiveOrderMaker.js'> </script>
   		<script type='text/javascript' src='/dwr/interface/CSPOrderMaker.js'></script>
+  		<script type='text/javascript' src='/dwr/interface/TreeSearchOrderMaker.js'></script>
   		<script type='text/javascript' src='/dwr/engine.js'></script>
 		<script type='text/javascript' src='/dwr/util.js'></script>
 
@@ -24,6 +25,11 @@
                         name: "Plain Order Maker",
                         maker: PlainOrderMaker,
                         url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/plain/PlainOrderMaker.java"
+                    },
+                    "ts": {
+                        name: "Tree Search Order Maker",
+                        maker: TreeSearchOrderMaker,
+                        url: "http://github.com/siuying/quiz1/blob/master/src/quiz/meal/search/TreeSearchOrderMaker.java"
                     },
                     "csp": {
                         name: "CSP Order Maker",
@@ -60,13 +66,15 @@
 			    loadMenu: function() {
 			        var menu = this.getMenu();
 
+					if (console) console.log('menu: ', menu);
+					
 			        // Init food
 			        var foods = [];
 			        for (var f in menu.foods) {
 			            foods.push(f);
 			        }
 			        var html = jQuery.map(foods, function(n, i) {
-			            return '<a class="food" href="#">' + n + '</a>($' + menu.foods[f].price + ')';
+			            return '<a class="food" href="#">' + n + '</a><span class="price">($' + menu.foods[f].price + ')</span>';
 			        }).join(",");
 
 			        // Populate food items
@@ -87,6 +95,20 @@
 				            }
 				            return false;
 				        });
+
+			        var meals = [];
+			        for (var f in menu.meals) {
+			        	meals.push(f);
+			        }
+			        html = jQuery.map(meals, function(meal, i) {
+			            var mealHtml = '<li><span class="meal" title="'+ menu.meals[meal].foods.join(",") + '">' + meal + '</span>';
+			            mealHtml += '<span class="price">($' + menu.meals[meal].price + ')</span> ';
+			            mealHtml += '</li>';
+			            return mealHtml;
+			        }).join('');
+			        
+			        jQuery("#mealMenu")
+						.html('<ul>' + html + '</ul>');			        
 			    },
 
 			    findOrder: function() {
@@ -175,6 +197,11 @@
 		<div class="section">
 			<h2>點擊加入食物:</h2>
 			<div id="availableFoods"></div>
+		</div>
+		
+		<div class="section">
+			<h2>套餐:</h2>
+			<div id="mealMenu"></div>
 		</div>
 		
 		<div class="section">

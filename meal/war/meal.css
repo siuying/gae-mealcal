@@ -34,6 +34,13 @@ h2 {
 	color: white;
 }
 
+.price {
+	color: #aaaaaa;
+	font-style: italic;
+	font-size: 0.9em;
+	padding: 0 0.3em;
+}
+
 #selected {
 	min-height: 1.3em;
 	margin: 1em 0;

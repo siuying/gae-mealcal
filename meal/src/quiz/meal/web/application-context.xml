@@ -23,6 +23,10 @@
 
 	<bean class="quiz.meal.plain.PlainOrderMaker" name="plainOrderMaker" />
 	
+	<bean class="quiz.meal.search.TreeSearchOrderMaker" name="treeSearchOrderMaker" depends-on="menu">
+		<constructor-arg ref="menu" />
+	</bean>
+	
 	<bean class="quiz.meal.csp.CSOrderMaker" name="cspOrderMaker" />
 	
 	<bean class="quiz.meal.web.MenuFacade" name="menuFacade" depends-on="menu">
@@ -45,6 +49,14 @@
 		<property name="orderMaker" ref="plainOrderMaker" />
 		<property name="menu" ref="menu" />
 		<dwr:remote javascript="PlainOrderMaker">
+			<dwr:include method="makeOrder" />
+		</dwr:remote>
+	</bean>
+	
+	<bean class="quiz.meal.web.OrderMakerFacade" name="tsOrderMakerFacade" depends-on="menu,treeSearchOrderMaker">
+		<property name="orderMaker" ref="treeSearchOrderMaker" />
+		<property name="menu" ref="menu" />
+		<dwr:remote javascript="TreeSearchOrderMaker">
 			<dwr:include method="makeOrder" />
 		</dwr:remote>
 	</bean>
