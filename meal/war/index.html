@@ -2,6 +2,7 @@
 	<head>
 		<title>買餐計價</title>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
+		<script type='text/javascript' src='http://getfirebug.com/firebug/firebugx.js'></script>
   		<script type='text/javascript' src='./dwr/engine.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/Menu.js'> </script>
   		<script type='text/javascript' src='./dwr/interface/PlainOrderMaker.js'> </script>
@@ -66,7 +67,7 @@
 			    loadMenu: function() {
 			        var menu = this.getMenu();
 
-					if (console) console.log('menu: ', menu);
+					console.log('menu: ', menu);
 					
 			        // Init food
 			        var foods = [];
